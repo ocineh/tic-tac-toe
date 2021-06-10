@@ -70,6 +70,7 @@ pub mod board {
 pub mod game {
 	use super::board::{Board, Player};
 	use std::io::{Write, self};
+	use rand::Rng;
 
 	fn ask_cell(current_player: Player) -> Result<i8, std::num::ParseIntError> {
 		match current_player {
@@ -101,6 +102,36 @@ pub mod game {
 					current_player = if current_player == Player::Cross { Player::Circle } else { Player::Cross };
 				}
 			}
+		}
+
+		print!("{esc}[2J{esc}[0;0H", esc = 27 as char);
+		println!("Game over");
+		board.display();
+
+		match board.check_winner() {
+			Player::Cross => println!("Victory of the player with the cross."),
+			Player::Circle => println!("Victory of the player with the circle."),
+			Player::None => println!("The game ended in a draw."),
+		}
+	}
+
+	pub fn against_computer() {
+		let mut board = Board::new();
+		let mut rng = rand::thread_rng();
+
+		while !board.is_full() && board.check_winner() == Player::None {
+			print!("{esc}[2J{esc}[0;0H", esc = 27 as char);
+			println!("Current game:");
+			board.display();
+
+			match ask_cell(Player::Cross) {
+				Ok(cell) => {
+					if !board.player_stroke(Player::Cross, cell) { continue }
+				}
+				Err(_) => continue,
+			};
+
+			while !board.player_stroke(Player::Circle, rng.gen_range(1..=9)) {}
 		}
 
 		print!("{esc}[2J{esc}[0;0H", esc = 27 as char);
