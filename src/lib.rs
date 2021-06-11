@@ -80,7 +80,6 @@ pub mod board {
 pub mod game {
 	use super::board::{Board, Player};
 	use std::io::{Write, self};
-	use rand::Rng;
 
 	fn ask_cell(current_player: Player) -> Result<i8, std::num::ParseIntError> {
 		match current_player {
@@ -151,6 +150,21 @@ pub mod game {
 			Player::Cross => println!("Victory of the player with the cross."),
 			Player::Circle => println!("Victory of the player with the circle."),
 			Player::None => println!("The game ended in a draw."),
+		}
+	}
+
+	pub mod random {
+		use super::{Board, Player};
+
+		pub fn round() -> Player {
+			let mut board = Board::new();
+			let mut current_player = Player::Cross;
+
+			while !board.is_full() && board.check_winner() == Player::None {
+				board.random_stroke(current_player);
+				current_player = if current_player == Player::Cross { Player::Circle } else { Player::Cross };
+			}
+			board.check_winner()
 		}
 	}
 }
