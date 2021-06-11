@@ -1,5 +1,6 @@
 pub mod board {
 	use std::fmt;
+	use rand::prelude::SliceRandom;
 
 	#[derive(PartialEq, Copy, Clone)]
 	pub enum Player { Cross, Circle, None }
@@ -14,11 +15,11 @@ pub mod board {
 		}
 	}
 
-	pub struct Board([[Player; 3]; 3]);
+	pub struct Board([[Player; 3]; 3], Vec<i8>);
 
 	impl Board {
 		pub fn new() -> Board {
-			Board([[Player::None; 3]; 3])
+			Board([[Player::None; 3]; 3], vec![1,2,3,4,5,6,7,8,9])
 		}
 		pub fn is_full(&self) -> bool {
 			for row in 0..3 {
@@ -55,14 +56,23 @@ pub mod board {
 			else { Player::None }
 		}
 		pub fn player_stroke(&mut self, player: Player, pos: i8) -> bool {
-			if pos < 1 || pos > 9 { return false; }
+			if !self.1.contains(&pos) { return false; }
 			let row: usize = ((pos - 1) / 3) as usize;
 			let col: usize = ((pos - 1) % 3) as usize;
 			if self.0[row][col] == Player::None {
 				self.0[row][col] = player;
+				let index = self.1.iter().position(|&x| x == pos).unwrap();
+				self.1.remove(index);
 				true
 			}
 			else { false }
+		}
+		pub fn random_stroke(&mut self, player: Player) -> bool {
+			match self.1.len() {
+				n if n > 1 => self.player_stroke(player, *self.1.choose(&mut rand::thread_rng()).unwrap()),
+				n if n == 1 => self.player_stroke(player, self.1[0]),
+				_ => false
+			}
 		}
 	}
 }
@@ -117,7 +127,6 @@ pub mod game {
 
 	pub fn against_computer() {
 		let mut board = Board::new();
-		let mut rng = rand::thread_rng();
 
 		while !board.is_full() && board.check_winner() == Player::None {
 			print!("{esc}[2J{esc}[0;0H", esc = 27 as char);
@@ -131,7 +140,7 @@ pub mod game {
 				Err(_) => continue,
 			};
 
-			while !board.player_stroke(Player::Circle, rng.gen_range(1..=9)) {}
+			board.random_stroke(Player::Circle);
 		}
 
 		print!("{esc}[2J{esc}[0;0H", esc = 27 as char);
