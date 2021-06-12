@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-pub mod board {
+mod board {
 	use std::fmt;
 	use rand::prelude::SliceRandom;
 
@@ -158,7 +158,7 @@ pub mod game {
 	pub mod random {
 		use super::{Board, Player};
 
-		pub fn round() -> Player {
+		fn round() -> Player {
 			let mut board = Board::new();
 			let mut current_player = Player::Cross;
 
@@ -170,7 +170,7 @@ pub mod game {
 		}
 
 		#[derive(Debug)]
-		pub struct RoundsResult {
+		struct RoundsResult {
 			cross: u128,
 			circle: u128,
 			none: u128,
@@ -206,7 +206,7 @@ pub mod game {
 			}
 		}
 
-		pub fn rounds(n: u128) -> RoundsResult {
+		fn rounds(n: u128) -> RoundsResult {
 			let mut res = RoundsResult::new();
 			for _ in 0..n {
 				let player = round();
