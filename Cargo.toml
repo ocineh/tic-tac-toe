@@ -1,6 +1,6 @@
 [package]
 name = "tic-tac-toe"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Hocine <hocine.hammouche@hotmail.com>"]
 edition = "2018"
 
@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 rand = "0.8.3"
+structopt = "0.3.21"
