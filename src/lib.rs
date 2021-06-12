@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 pub mod board {
 	use std::fmt;
 	use rand::prelude::SliceRandom;
@@ -185,6 +187,23 @@ pub mod game {
 					Player::None => self.none += 1,
 				}
 			}
+			fn total(&self) -> u128 { self.circle + self.cross + self.none }
+			fn percentage(&self, player: Player) -> f32 {
+				let tmp = match player {
+					Player::Cross => self.cross,
+					Player::Circle => self.circle,
+					Player::None => self.none
+				};
+				tmp as f32 * 100.0 / self.total() as f32
+			}
+		}
+
+		impl std::ops::AddAssign for RoundsResult {
+			fn add_assign(&mut self, rhs: RoundsResult) {
+				self.circle += rhs.circle;
+				self.cross += rhs.cross;
+				self.none += rhs.none;
+			}
 		}
 
 		pub fn rounds(n: u128) -> RoundsResult {
@@ -194,6 +213,29 @@ pub mod game {
 				res.increment(player);
 			}
 			res
+		}
+
+		pub fn launch_thread_rounds(thread: u8, num_round: u128) {
+			let mut result = RoundsResult::new();
+
+			let now = std::time::Instant::now();
+
+			let mut children = vec![];
+			let (tx, rx) = std::sync::mpsc::channel();
+			for _i in 0..thread {
+				let tx_copy = std::sync::mpsc::Sender::clone(&tx);
+				children.push(std::thread::spawn(move || tx_copy.send(rounds(num_round))));
+			}
+
+			std::mem::drop(tx);
+			for res in rx { result += res; }
+
+			let elapsed_time = now.elapsed().as_millis();
+			println!("finished after {} milliseconds or {:.2} seconds or {:.2} minutes.", elapsed_time, elapsed_time as f64/1000.0, elapsed_time as f64/1000.0/60.0);
+			println!("\nresult for {} rounds : ", result.total());
+			println!("\t{:.3}% victory for the player with the cross.", result.percentage(Player::Cross));
+			println!("\t{:.3}% victory for the player with the circle.", result.percentage(Player::Circle));
+			println!("\t{:.3}% draw.", result.percentage(Player::None));
 		}
 	}
 }
