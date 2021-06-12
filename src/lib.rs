@@ -166,5 +166,34 @@ pub mod game {
 			}
 			board.check_winner()
 		}
+
+		#[derive(Debug)]
+		pub struct RoundsResult {
+			cross: u128,
+			circle: u128,
+			none: u128,
+		}
+
+		impl RoundsResult {
+			fn new() -> RoundsResult {
+				RoundsResult { cross: 0, circle: 0, none: 0 }
+			}
+			fn increment(&mut self, player: Player) {
+				match player {
+					Player::Cross => self.cross += 1,
+					Player::Circle => self.circle += 1,
+					Player::None => self.none += 1,
+				}
+			}
+		}
+
+		pub fn rounds(n: u128) -> RoundsResult {
+			let mut res = RoundsResult::new();
+			for _ in 0..n {
+				let player = round();
+				res.increment(player);
+			}
+			res
+		}
 	}
 }
