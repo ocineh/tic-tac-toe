@@ -1,10 +1,11 @@
 mod lib;
+
 use lib::game;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 #[structopt()]
-enum Mode{
+enum Mode {
 	#[structopt(name = "player")]
 	Player,
 	#[structopt(name = "computer")]
@@ -17,12 +18,12 @@ enum Opt {
 	#[structopt(name = "against")]
 	Against(Mode),
 	#[structopt(name = "random")]
-	Random{
+	Random {
 		#[structopt(short, long = "thread", default_value = "1")]
 		thread: u8,
 		#[structopt(short, long = "round", default_value = "10")]
 		round: u128,
-	}
+	},
 }
 
 fn main() {

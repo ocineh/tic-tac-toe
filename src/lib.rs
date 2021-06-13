@@ -21,7 +21,7 @@ mod board {
 
 	impl Board {
 		pub fn new() -> Board {
-			Board([[Player::None; 3]; 3], vec![1,2,3,4,5,6,7,8,9])
+			Board([[Player::None; 3]; 3], vec![1, 2, 3, 4, 5, 6, 7, 8, 9])
 		}
 		pub fn is_full(&self) -> bool {
 			for row in 0..3 {
@@ -66,8 +66,7 @@ mod board {
 				let index = self.1.iter().position(|&x| x == pos).unwrap();
 				self.1.remove(index);
 				true
-			}
-			else { false }
+			} else { false }
 		}
 		pub fn random_stroke(&mut self, player: Player) -> bool {
 			match self.1.len() {
@@ -136,7 +135,7 @@ pub mod game {
 
 			match ask_cell(Player::Cross) {
 				Ok(cell) => {
-					if !board.player_stroke(Player::Cross, cell) { continue }
+					if !board.player_stroke(Player::Cross, cell) { continue; }
 				}
 				Err(_) => continue,
 			};
@@ -231,7 +230,7 @@ pub mod game {
 			for res in rx { result += res; }
 
 			let elapsed_time = now.elapsed().as_millis();
-			println!("finished after {} milliseconds or {:.2} seconds or {:.2} minutes.", elapsed_time, elapsed_time as f64/1000.0, elapsed_time as f64/1000.0/60.0);
+			println!("finished after {} milliseconds or {:.2} seconds or {:.2} minutes.", elapsed_time, elapsed_time as f64 / 1000.0, elapsed_time as f64 / 1000.0 / 60.0);
 			println!("\nresult for {} rounds : ", result.total());
 			println!("\t{:.3}% victory for the player with the cross.", result.percentage(Player::Cross));
 			println!("\t{:.3}% victory for the player with the circle.", result.percentage(Player::Circle));

@@ -1,7 +1,9 @@
 # Tic Tac Toe
+
 A version of tic-tac-toe made in rust that is played in a terminal.
 
 ## Roadmap
+
 - [X] Display the tray
 - [X] Check if there is a winner
 - [X] Play a move according to a chosen cell
