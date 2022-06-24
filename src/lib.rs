@@ -47,25 +47,39 @@ mod board {
 				i += 3;
 			}
 		}
-		pub fn check_winner(&self) -> Player {
-			if self.0[0][0] == Player::Cross && self.0[0][1] == Player::Cross && self.0[0][2] == Player::Cross { Player::Cross }
-			else if self.0[0][0] == Player::Cross && self.0[0][1] == Player::Cross && self.0[0][2] == Player::Cross { Player::Cross }
-			else if self.0[2][0] == Player::Cross && self.0[2][1] == Player::Cross && self.0[2][2] == Player::Cross { Player::Cross }
-			else if self.0[0][0] == Player::Cross && self.0[1][0] == Player::Cross && self.0[2][0] == Player::Cross { Player::Cross }
-			else if self.0[0][1] == Player::Cross && self.0[1][1] == Player::Cross && self.0[2][1] == Player::Cross { Player::Cross }
-			else if self.0[0][2] == Player::Cross && self.0[1][2] == Player::Cross && self.0[2][2] == Player::Cross { Player::Cross }
-			else if self.0[0][0] == Player::Cross && self.0[1][1] == Player::Cross && self.0[2][2] == Player::Cross { Player::Cross }
-			else if self.0[2][0] == Player::Cross && self.0[1][1] == Player::Cross && self.0[0][2] == Player::Cross { Player::Cross }
-			else if self.0[0][0] == Player::Circle && self.0[0][1] == Player::Circle && self.0[0][2] == Player::Circle { Player::Circle }
-			else if self.0[1][0] == Player::Circle && self.0[1][1] == Player::Circle && self.0[1][2] == Player::Circle { Player::Circle }
-			else if self.0[2][0] == Player::Circle && self.0[2][1] == Player::Circle && self.0[2][2] == Player::Circle { Player::Circle }
-			else if self.0[0][0] == Player::Circle && self.0[1][0] == Player::Circle && self.0[2][0] == Player::Circle { Player::Circle }
-			else if self.0[0][1] == Player::Circle && self.0[1][1] == Player::Circle && self.0[2][1] == Player::Circle { Player::Circle }
-			else if self.0[0][2] == Player::Circle && self.0[1][2] == Player::Circle && self.0[2][2] == Player::Circle { Player::Circle }
-			else if self.0[0][0] == Player::Circle && self.0[1][1] == Player::Circle && self.0[2][2] == Player::Circle { Player::Circle }
-			else if self.0[2][0] == Player::Circle && self.0[1][1] == Player::Circle && self.0[0][2] == Player::Circle { Player::Circle }
-			else { Player::None }
+
+		fn check_winner_row(&self) -> Option<Player> {
+			for row in self.0.iter() {
+				if row[0] != Player::None && row[0] == row[1] && row[1] == row[2] {
+					return Some(row[0]);
+				}
+			}
+			None
 		}
+		fn check_winner_col(&self) -> Option<Player> {
+			for col in 0..3 {
+				if self.0[0][col] != Player::None && self.0[0][col] == self.0[1][col] && self.0[1][col] == self.0[2][col] {
+					return Some(self.0[0][col]);
+				}
+			}
+			None
+		}
+		fn check_winner_dig(&self) -> Option<Player> {
+			if self.0[0][0] != Player::None && self.0[0][0] == self.0[1][1] && self.0[0][0] == self.0[2][2] {
+				return Some(self.0[0][0]);
+			}
+			if self.0[0][2] != Player::None && self.0[0][2] == self.0[1][1] && self.0[0][2] == self.0[2][0] {
+				return Some(self.0[0][2]);
+			}
+			None
+		}
+		pub fn check_winner(&self) -> Player {
+			if let Some(player) = self.check_winner_row() { return player; }
+			if let Some(player) = self.check_winner_col() { return player; }
+			if let Some(player) = self.check_winner_dig() { return player; }
+			Player::None
+		}
+
 		pub fn player_stroke(&mut self, player: Player, pos: i8) -> bool {
 			if !self.1.contains(&pos) { return false; }
 			let row: usize = ((pos - 1) / 3) as usize;
