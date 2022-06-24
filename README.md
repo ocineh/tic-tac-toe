@@ -1,6 +1,17 @@
-# Tic Tac Toe
+# tic-tac-toe
 
-A version of tic-tac-toe made in rust that is played in a terminal.
+The tic-tac-toe game playable in the terminal against the computer or another human.
+
+## Usage
+
+You can use the project in three different ways, to play against the computer, to play against
+another human, or to make the computer play against itself.
+
+```bash
+cargo run -- against computer # To play against the computer (random moves)
+cargo run -- against human # To play against another human
+cargo run -- random -r 100 -t 10 # The computer will play against itself
+```
 
 ## Roadmap
 
@@ -13,5 +24,5 @@ A version of tic-tac-toe made in rust that is played in a terminal.
 - [X] Play a game against the computer with random moves
 - [X] Start a random game (computer vs computer)
 - [X] Run multiple random games (computer vs computer)
-- [ ] Launching threads that launch multiple random games
-- [ ] Be able to launch the program with a command line
+- [X] Launching threads that launch multiple random games
+- [X] Be able to launch the program with a command line
