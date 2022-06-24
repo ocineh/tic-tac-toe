@@ -2,6 +2,7 @@
 
 mod board {
 	use std::fmt;
+
 	use rand::prelude::SliceRandom;
 
 	#[derive(PartialEq, Copy, Clone)]
@@ -33,9 +34,17 @@ mod board {
 		}
 		pub fn display(&self) {
 			println!("+---+---+---+");
+			let mut i = 1;
 			for row in self.0.iter() {
-				println!("| {} | {} | {} |", row[0], row[1], row[2]);
+				print!("| ");
+				if row[0] == Player::None { print!("{}", i) } else { print!("{}", row[0]) };
+				print!(" | ");
+				if row[1] == Player::None { print!("{}", i + 1) } else { print!("{}", row[1]) };
+				print!(" | ");
+				if row[2] == Player::None { print!("{}", i + 2) } else { print!("{}", row[2]) };
+				println!(" |");
 				println!("+---+---+---+");
+				i += 3;
 			}
 		}
 		pub fn check_winner(&self) -> Player {
@@ -79,8 +88,9 @@ mod board {
 }
 
 pub mod game {
+	use std::io::{self, Write};
+
 	use super::board::{Board, Player};
-	use std::io::{Write, self};
 
 	fn ask_cell(current_player: Player) -> Result<i8, std::num::ParseIntError> {
 		match current_player {
